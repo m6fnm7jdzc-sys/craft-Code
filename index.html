@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CORD カラーセレクター</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f9f6f2; color: #333; padding: 20px; }
+  .container { max-width: 480px; margin: 0 auto; }
+  h1 { text-align: center; font-size: 22px; letter-spacing: 3px; margin: 20px 0 4px; }
+  .subtitle { text-align: center; font-size: 12px; color: #999; margin-bottom: 24px; }
+  .card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .title-sm { font-size: 11px; letter-spacing: 2px; color: #999; text-transform: uppercase; margin-bottom: 12px; }
+
+  .cord-visual { display: flex; align-items: center; justify-content: center; height: 60px; margin-bottom: 10px; }
+  .cord-section { height: 26px; border-radius: 13px; transition: background 0.3s; }
+  .cord-main { width: 40%; }
+  .cord-accent { width: 24%; height: 30px; border-radius: 15px; margin: 0 -6px; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  .ring { width: 34px; height: 34px; border: 4px solid #c0c0c0; border-radius: 50%; margin-left: 8px; }
+  .preview-text { text-align: center; font-size: 14px; font-weight: 600; color: #555; margin-top: 6px; }
+
+  .line-options { display: flex; gap: 10px; }
+  .line-option { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 10px; text-align: center; cursor: pointer; }
+  .line-option.selected { border-color: #333; background: #f9f6f2; }
+  .line-name { font-size: 12px; font-weight: 700; }
+  .line-price { font-size: 14px; font-weight: 700; color: #c0392b; }
+  .line-desc { font-size: 9px; color: #aaa; margin-top: 4px; }
+
+  .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .color-option { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+  .color-circle { width: 40px; height: 40px; border-radius: 50%; border: 3px solid transparent; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+  .color-option.selected .color-circle { border-color: #333; transform: scale(1.1); }
+  .color-name { font-size: 9px; color: #888; text-align: center; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+  .toggle-switch { width: 46px; height: 24px; background: #ddd; border-radius: 12px; cursor: pointer; position: relative; transition: background 0.3s; }
+  .toggle-switch.on { background: #333; }
+  .toggle-switch::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: left 0.3s; }
+  .toggle-switch.on::after { left: 25px; }
+
+  .pair-preview { display: none; }
+  .pair-preview.show { display: block; }
+  .pair-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .pair-label { font-size: 10px; color: #aaa; width: 30px; }
+  .mini-cord { display: flex; align-items: center; flex: 1; height: 30px; }
+  .mini-section { height: 18px; border-radius: 9px; }
+  .mini-main { width: 40%; }
+  .mini-accent { width: 24%; height: 22px; border-radius: 11px; margin: 0 -4px; }
+  .mini-ring { width: 20px; height: 20px; border: 3px solid #c0c0c0; border-radius: 50%; margin-left: 6px; }
+
+  .price-amount { text-align: center; font-size: 26px; font-weight: 700; }
+  .price-label { text-align: center; font-size: 11px; color: #aaa; margin-bottom: 12px; }
+  .order-summary { background: #f9f6f2; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #666; line-height: 1.7; margin-bottom: 14px; white-space: pre-line; }
+  .order-btn { display: block; width: 100%; padding: 14px; background: #2c2c2c; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>C O R D</h1>
+  <p class="subtitle">color selector</p>
+
+  <div class="card">
+    <div class="title-sm">ラインを選ぶ</div>
+    <div class="line-options">
+      <div class="line-option selected" onclick="selectLine('standard')">
+        <div class="line-name">Standard</div>
+        <div class="line-price">¥3,000</div>
+        <div class="line-desc">2色・キーリング</div>
+      </div>
+      <div class="line-option" onclick="selectLine('premium')">
+        <div class="line-name">Premium</div>
+        <div class="line-price">¥4,500</div>
+        <div class="line-desc">3色・カラビナ</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="cord-visual">
+      <div class="cord-section cord-main" id="preview-main"></div>
+      <div class="cord-section cord-accent" id="preview-accent"></div>
+      <div class="cord-section cord-main" id="preview-main-r"></div>
+      <div class="ring"></div>
+    </div>
+    <div class="preview-text" id="preview-text">ベースカラーを選んでください</div>
+  </div>
+
+  <div class="card">
+    <div class="title-sm">ベースカラー</div>
+    <div class="color-grid" id="base-grid"></div>
+  </div>
+
+  <div class="card">
+    <div class="title-sm">アクセントカラー</div>
+    <div class="color-grid" id="accent-grid"></div>
+  </div>
+
+  <div class="card">
+    <div class="toggle-row">
+      <div>
+        <div style="font-size:13px; font-weight:600;">🔗 ペアセットにする</div>
+        <div style="font-size:10px; color:#aaa;">大切な人と色を入れ替えてお揃いに</div>
+      </div>
+      <div class="toggle-switch" id="pair-toggle" onclick="togglePair()"></div>
+    </div>
+  </div>
+
+  <div class="card pair-preview" id="pair-preview">
+    <div class="title-sm">ペアプレビュー</div>
+    <div class="pair-row">
+      <div class="pair-label">あなた</div>
+      <div class="mini-cord">
+        <div class="mini-section mini-main" id="pair-a-main"></div>
+        <div class="mini-section mini-accent" id="pair-a-accent"></div>
+        <div class="mini-section mini-main" id="pair-a-main-r"></div>
+        <div class="mini-ring"></div>
+      </div>
+    </div>
+    <div class="pair-row">
+      <div class="pair-label">相手</div>
+      <div class="mini-cord">
+        <div class="mini-section mini-main" id="pair-b-main"></div>
+        <div class="mini-section mini-accent" id="pair-b-accent"></div>
+        <div class="mini-section mini-main" id="pair-b-main-r"></div>
+        <div class="mini-ring"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="price-amount" id="price-display">¥3,000</div>
+    <div class="price-label">税込 / 送料別</div>
+    <div class="order-summary" id="order-summary">ラインとカラーを選んで注文へ進んでください</div>
+    <a class="order-btn" href="#" onclick="handleOrder(event)">この組み合わせで注文する →</a>
+  </div>
+</div>
+
+<script>
+  // ここを実際に使っているパラコードの色名・カラーコードに書き換えてください
+  const COLORS = [
+    { id: 'brown',  name: 'アースブラウン',   hex: '#8B5E3C' },
+    { id: 'beige',  name: 'サンドベージュ',   hex: '#C9A97A' },
+    { id: 'blue',   name: 'オーシャンブルー', hex: '#5B8DB8' },
+    { id: 'yellow', name: 'サンイエロー',     hex: '#D4A017' },
+    { id: 'white',  name: 'クリームホワイト', hex: '#F0EDE6' },
+    { id: 'khaki',  name: 'カーキ',           hex: '#7D8C5A' },
+  ];
+
+  let state = { line: 'standard', base: null, accent: null, isPair: false };
+  const PRICES = { standard: 3000, premium: 4500, standardPair: 5500, premiumPair: 8500 };
+
+  function init() {
+    renderGrid('base-grid', 'base');
+    renderGrid('accent-grid', 'accent');
+  }
+  function renderGrid(containerId, type) {
+    const c = document.getElementById(containerId);
+    c.innerHTML = '';
+    COLORS.forEach(color => {
+      const div = document.createElement('div');
+      div.className = 'color-option';
+      div.id = `${type}-${color.id}`;
+      div.onclick = () => selectColor(type, color);
+      div.innerHTML = `<div class="color-circle" style="background:${color.hex}"></div><div class="color-name">${color.name}</div>`;
+      c.appendChild(div);
+    });
+  }
+  function selectLine(line) {
+    state.line = line;
+    document.querySelectorAll('.line-option').forEach((el, i) => {
+      el.classList.toggle('selected', (i===0 && line==='standard') || (i===1 && line==='premium'));
+    });
+    updatePrice();
+  }
+  function selectColor(type, color) {
+    state[type] = color;
+    document.querySelectorAll(`[id^="${type}-"]`).forEach(el => el.classList.remove('selected'));
+    document.getElementById(`${type}-${color.id}`)?.classList.add('selected');
+    updatePreview();
+    updatePrice();
+  }
+  function updatePreview() {
+    const base = state.base?.hex || '#ddd';
+    const accent = state.accent?.hex || '#ccc';
+    document.getElementById('preview-main').style.background = base;
+    document.getElementById('preview-main-r').style.background = base;
+    document.getElementById('preview-accent').style.background = accent;
+    document.getElementById('preview-text').textContent =
+      state.base && state.accent ? `${state.base.name} × ${state.accent.name}` :
+      state.base ? `${state.base.name} → アクセントを選んでください` : 'ベースカラーを選んでください';
+    document.getElementById('pair-a-main').style.background = base;
+    document.getElementById('pair-a-main-r').style.background = base;
+    document.getElementById('pair-a-accent').style.background = accent;
+    document.getElementById('pair-b-main').style.background = accent;
+    document.getElementById('pair-b-main-r').style.background = accent;
+    document.getElementById('pair-b-accent').style.background = base;
+    updateSummary();
+  }
+  function togglePair() {
+    state.isPair = !state.isPair;
+    document.getElementById('pair-toggle').classList.toggle('on', state.isPair);
+    document.getElementById('pair-preview').classList.toggle('show', state.isPair);
+    updatePrice();
+    updateSummary();
+  }
+  function updatePrice() {
+    const price = state.isPair
+      ? (state.line === 'premium' ? PRICES.premiumPair : PRICES.standardPair)
+      : (state.line === 'premium' ? PRICES.premium : PRICES.standard);
+    document.getElementById('price-display').textContent = `¥${price.toLocaleString()}`;
+  }
+  function updateSummary() {
+    const lineName = state.line === 'premium' ? 'Premium' : 'Standard';
+    const pairText = state.isPair ? '（ペアセット）' : '';
+    document.getElementById('order-summary').textContent =
+      `ライン：${lineName}${pairText}\nベースカラー：${state.base ? state.base.name : '未選択'}\nアクセントカラー：${state.accent ? state.accent.name : '未選択'}`;
+  }
+  function handleOrder(e) {
+    e.preventDefault();
+    if (!state.base || !state.accent) { alert('ベースカラーとアクセントカラーを選んでください'); return; }
+    alert('【ご注文内容の確認】\n' + document.getElementById('order-summary').textContent +
+      '\n\n価格：' + document.getElementById('price-display').textContent +
+      '\n\nこの内容でBASEショップの注文ページへお進みください。');
+    // window.location.href = 'https://あなたのBASEショップURL.base.shop'; // 実際に運用する際はここを有効にしてください
+  }
+  init();
+</script>
+</body>
+</html>
