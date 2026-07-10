@@ -9,24 +9,36 @@
 body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; color: #333; }
 .header { background: #1a1a1a; color: white; text-align: center; padding: 20px 16px 16px; }
 .header h1 { font-size: 20px; letter-spacing: 4px; font-weight: 300; }
-.header p { font-size: 11px; color: #999; margin-top: 4px; }
+.header p { font-size: 11px; color: #999; margin-top: 4px; letter-spacing: 2px; }
 .container { max-width: 480px; margin: 0 auto; padding: 16px; }
 .progress-bar { height: 3px; background: #eee; border-radius: 2px; margin-bottom: 14px; }
 .progress-fill { height: 100%; background: #1a1a1a; border-radius: 2px; transition: width 0.3s; }
-.card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-.card-title { font-size: 10px; letter-spacing: 2px; color: #aaa; text-transform: uppercase; margin-bottom: 12px; text-align: center; }
-.photo-wrap { position: relative; width: 100%; max-width: 300px; margin: 0 auto; }
+
+.photo-card, .visual-card, .step-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.photo-title, .visual-title { font-size: 10px; letter-spacing: 2px; color: #aaa; text-transform: uppercase; margin-bottom: 12px; text-align: center; }
+
+.photo-wrap { position: relative; width: 100%; max-width: 320px; margin: 0 auto; }
 .photo-base { display: block; width: 100%; height: auto; }
-.overlay-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.tint-layer {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  mix-blend-mode: multiply;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+  -webkit-mask-size: contain; mask-size: contain;
+  transition: background 0.3s ease;
+}
+.photo-note { text-align:center; font-size:9px; color:#bbb; margin-top:10px; }
+
 .strap-container { display: flex; align-items: center; justify-content: center; height: 70px; }
 .nasukan { width: 28px; height: 28px; border: 4px solid #b8a060; border-radius: 6px; border-bottom: none; flex-shrink: 0; }
-.main-wrap { width: 36px; height: 44px; border-radius: 8px; flex-shrink: 0; transition: background 0.3s; }
+.main-wrap-right, .main-wrap-left { width: 36px; height: 44px; border-radius: 8px; flex-shrink: 0; transition: background 0.3s; }
 .sub-right-coil { width: 32px; height: 52px; border-radius: 10px; flex-shrink: 0; transition: background 0.3s; }
 .main-body { width: 80px; height: 28px; border-radius: 14px; flex-shrink: 0; transition: background 0.3s; }
 .sub-left-braid { width: 64px; height: 44px; border-radius: 10px; flex-shrink: 0; position: relative; overflow: hidden; }
 .keyring { width: 30px; height: 30px; border: 5px solid #c0c0c0; border-radius: 50%; flex-shrink: 0; margin-left: 4px; }
 .preview-label { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-top: 10px; min-height: 20px; }
 .preview-sub { text-align: center; font-size: 10px; color: #aaa; margin-top: 3px; min-height: 14px; }
+
 .step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .step-badge { width: 26px; height: 26px; border-radius: 50%; background: #1a1a1a; color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .step-badge.done { background: #4CAF50; }
@@ -41,6 +53,7 @@ body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; co
 .color-item.selected .color-circle { border-color: #1a1a1a; transform: scale(1.12); }
 .color-num { font-size: 8px; color: #bbb; }
 .color-name-label { font-size: 8px; color: #888; text-align: center; line-height: 1.2; }
+
 .summary-card { background: #1a1a1a; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
 .summary-title { font-size: 10px; letter-spacing: 2px; color: #666; margin-bottom: 12px; }
 .summary-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
@@ -51,59 +64,62 @@ body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; co
 .summary-price-sub { text-align: center; font-size: 10px; color: #666; margin-bottom: 14px; }
 .order-btn { display: block; width: 100%; padding: 15px; background: #c0a060; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: 1px; }
 .order-btn:disabled { background: #444; color: #666; cursor: not-allowed; }
-.calib-note { text-align:center; font-size:9px; color:#bbb; margin-top:8px; }
 </style>
 </head>
 <body>
-<div class="header"><h1>CRAFT CODE</h1><p>COLOR SIMULATOR – Vol.1 STANDARD</p></div>
+
+<div class="header">
+  <h1>CRAFT CODE</h1>
+  <p>COLOR SIMULATOR – Vol.1 STANDARD（全37色）</p>
+</div>
+
 <div class="container">
   <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
 
-  <div class="card">
-    <div class="card-title">📸 実物プレビュー（色が変わります）</div>
+  <div class="photo-card">
+    <div class="photo-title">📸 実物の質感プレビュー</div>
     <div class="photo-wrap">
-      <img class="photo-base" src="base_white.jpg" alt="ストラップ">
-      <svg class="overlay-svg" viewBox="0 0 400 520" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse id="svg-main-loop" cx="200" cy="370" rx="155" ry="110" fill="rgba(200,200,200,0.55)" style="transition:fill 0.3s;"/>
-        <rect id="svg-main-wrap-left" x="118" y="60" width="38" height="130" rx="16" fill="rgba(200,200,200,0.55)" style="transition:fill 0.3s;"/>
-        <rect id="svg-main-wrap-right" x="244" y="60" width="38" height="130" rx="16" fill="rgba(200,200,200,0.55)" style="transition:fill 0.3s;"/>
-        <ellipse id="svg-subleft" cx="148" cy="255" rx="52" ry="80" fill="rgba(180,180,180,0.55)" style="transition:fill 0.3s;"/>
-        <ellipse id="svg-subright" cx="268" cy="245" rx="38" ry="65" fill="rgba(180,180,180,0.55)" style="transition:fill 0.3s;"/>
-      </svg>
+      <img class="photo-base" src="base_white.jpg" alt="ベース写真">
+      <div class="tint-layer" id="tint-main"
+           style="-webkit-mask-image:url(mask_main.png); mask-image:url(mask_main.png); background:#ddd;"></div>
+      <div class="tint-layer" id="tint-subleft"
+           style="-webkit-mask-image:url(mask_subleft.png); mask-image:url(mask_subleft.png); background:#ccc;"></div>
+      <div class="tint-layer" id="tint-subright"
+           style="-webkit-mask-image:url(mask_subright.png); mask-image:url(mask_subright.png); background:#ccc;"></div>
     </div>
-    <p class="calib-note">※図形の位置がズレている場合は、下記「位置調整の方法」をご覧ください。左側の編み込みはサブカラーAの代表色で表示しています。</p>
+    <div class="photo-note">※左側の編み込みは「サブカラーA」の代表色で質感を表現しています。正確な2色は下のイラストでご確認ください。</div>
   </div>
 
-  <div class="card">
-    <div class="card-title">🎨 正確な配色プレビュー</div>
+  <div class="visual-card">
+    <div class="visual-title">🎨 正確な配色プレビュー</div>
     <div class="strap-container">
       <div class="keyring"></div>
-      <div class="main-wrap" id="vis-main-left" style="background:#ddd"></div>
+      <div class="main-wrap-left" id="vis-main-left" style="background:#ddd"></div>
       <div class="sub-left-braid" id="vis-sub-left1" style="background:#ddd">
         <div id="vis-sub-left2" style="position:absolute;top:0;right:0;width:50%;height:100%;background:#ccc;border-radius:0 10px 10px 0;"></div>
       </div>
       <div class="main-body" id="vis-main-body" style="background:#ddd"></div>
       <div class="sub-right-coil" id="vis-sub-right" style="background:#ddd"></div>
-      <div class="main-wrap" id="vis-main-right" style="background:#ddd"></div>
+      <div class="main-wrap-right" id="vis-main-right" style="background:#ddd"></div>
       <div class="nasukan"></div>
     </div>
     <div class="preview-label" id="preview-label">カラーを選んでください</div>
     <div class="preview-sub" id="preview-sub">①メインカラーから順に選んでください</div>
   </div>
 
-  <div class="card">
+  <div class="step-card">
     <div class="step-header"><div class="step-badge" id="badge1">1</div><div class="step-info"><div class="step-name">①メインカラー</div><div class="step-desc">本体・ナスカン巻き部分（1色）</div></div><div class="step-selected" id="selected1-label">未選択</div></div>
     <div id="grid1"></div>
   </div>
-  <div class="card">
+  <div class="step-card">
     <div class="step-header"><div class="step-badge" id="badge2">2</div><div class="step-info"><div class="step-name">②サブカラーA（左）</div><div class="step-desc">左側の編み部分・1色目</div></div><div class="step-selected" id="selected2-label">未選択</div></div>
     <div id="grid2"></div>
   </div>
-  <div class="card">
-    <div class="step-header"><div class="step-badge" id="badge3">3</div><div class="step-info"><div class="step-name">②サブカラーB（左）</div><div class="step-desc">左側の編み部分・2色目</div></div><div class="step-selected" id="selected3-label">未選択</div></div>
+  <div class="step-card">
+    <div class="step-header"><div class="step-badge" id="badge3">3</div><div class="step-info"><div class="step-name">②サブカラーB（左）</div><div class="step-desc">左側の編み部分・2色目（Aと同じでもOK）</div></div><div class="step-selected" id="selected3-label">未選択</div></div>
     <div id="grid3"></div>
   </div>
-  <div class="card">
+  <div class="step-card">
     <div class="step-header"><div class="step-badge" id="badge4">4</div><div class="step-info"><div class="step-name">③サブカラー（右）</div><div class="step-desc">右側の編み部分（1色）</div></div><div class="step-selected" id="selected4-label">未選択</div></div>
     <div id="grid4"></div>
   </div>
@@ -119,6 +135,7 @@ body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; co
     <button class="order-btn" id="order-btn" disabled onclick="handleOrder()">4色すべて選んで注文へ →</button>
   </div>
 </div>
+
 <script>
 const COLORS = [
   {id:1,name:'アイスグレー',hex:'#C8C8C8',group:'A'},{id:2,name:'ミントブルー',hex:'#A8D8D8',group:'A'},
@@ -144,10 +161,6 @@ const COLORS = [
 const GROUP_NAMES = {A:'定番カラー',B:'ビビッドカラー',C:'ニュアンスカラー'};
 let selected = {1:null,2:null,3:null,4:null};
 
-function hexToRgba(hex, alpha) {
-  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  return `rgba(${r},${g},${b},${alpha})`;
-}
 function buildGrid(containerId, step) {
   const container = document.getElementById(containerId); container.innerHTML = '';
   ['A','B','C'].forEach(group => {
@@ -170,16 +183,14 @@ function selectColor(step, color) {
   document.getElementById(`step${step}-color${color.id}`)?.classList.add('selected');
   updateAll();
 }
-function updateAll() { updateSvgOverlay(); updateIllustration(); updateSummary(); updateBadges(); updateProgress(); updateOrderBtn(); }
-function updateSvgOverlay() {
-  const alpha = 0.6;
-  if (selected[1]) { const c = hexToRgba(selected[1].hex, alpha);
-    document.getElementById('svg-main-loop').setAttribute('fill', c);
-    document.getElementById('svg-main-wrap-left').setAttribute('fill', c);
-    document.getElementById('svg-main-wrap-right').setAttribute('fill', c); }
-  if (selected[2]) document.getElementById('svg-subleft').setAttribute('fill', hexToRgba(selected[2].hex, alpha));
-  if (selected[4]) document.getElementById('svg-subright').setAttribute('fill', hexToRgba(selected[4].hex, alpha));
+function updateAll() { updatePhoto(); updateIllustration(); updateSummary(); updateBadges(); updateProgress(); updateOrderBtn(); }
+
+function updatePhoto() {
+  if (selected[1]) document.getElementById('tint-main').style.background = selected[1].hex;
+  if (selected[2]) document.getElementById('tint-subleft').style.background = selected[2].hex;
+  if (selected[4]) document.getElementById('tint-subright').style.background = selected[4].hex;
 }
+
 function updateIllustration() {
   const m = selected[1]?.hex||'#ddd', s1=selected[2]?.hex||'#ddd', s2=selected[3]?.hex||'#ccc', r=selected[4]?.hex||'#ddd';
   document.getElementById('vis-main-left').style.background = m;
