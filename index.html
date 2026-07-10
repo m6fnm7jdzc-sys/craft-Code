@@ -3,228 +3,269 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CORD カラーセレクター</title>
+<title>Craft Code – カラーシミュレーター</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f9f6f2; color: #333; padding: 20px; }
-  .container { max-width: 480px; margin: 0 auto; }
-  h1 { text-align: center; font-size: 22px; letter-spacing: 3px; margin: 20px 0 4px; }
-  .subtitle { text-align: center; font-size: 12px; color: #999; margin-bottom: 24px; }
-  .card { background: white; border-radius: 16px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-  .title-sm { font-size: 11px; letter-spacing: 2px; color: #999; text-transform: uppercase; margin-bottom: 12px; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; color: #333; }
 
-  .cord-visual { display: flex; align-items: center; justify-content: center; height: 60px; margin-bottom: 10px; }
-  .cord-section { height: 26px; border-radius: 13px; transition: background 0.3s; }
-  .cord-main { width: 40%; }
-  .cord-accent { width: 24%; height: 30px; border-radius: 15px; margin: 0 -6px; z-index: 2; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
-  .ring { width: 34px; height: 34px; border: 4px solid #c0c0c0; border-radius: 50%; margin-left: 8px; }
-  .preview-text { text-align: center; font-size: 14px; font-weight: 600; color: #555; margin-top: 6px; }
+.header { background: #1a1a1a; color: white; text-align: center; padding: 20px 16px 16px; }
+.header h1 { font-size: 20px; letter-spacing: 4px; font-weight: 300; }
+.header p { font-size: 11px; color: #999; margin-top: 4px; letter-spacing: 2px; }
 
-  .line-options { display: flex; gap: 10px; }
-  .line-option { flex: 1; padding: 12px; border: 2px solid #eee; border-radius: 10px; text-align: center; cursor: pointer; }
-  .line-option.selected { border-color: #333; background: #f9f6f2; }
-  .line-name { font-size: 12px; font-weight: 700; }
-  .line-price { font-size: 14px; font-weight: 700; color: #c0392b; }
-  .line-desc { font-size: 9px; color: #aaa; margin-top: 4px; }
+.container { max-width: 480px; margin: 0 auto; padding: 16px; }
 
-  .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-  .color-option { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-  .color-circle { width: 40px; height: 40px; border-radius: 50%; border: 3px solid transparent; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
-  .color-option.selected .color-circle { border-color: #333; transform: scale(1.1); }
-  .color-name { font-size: 9px; color: #888; text-align: center; }
+.visual-card { background: white; border-radius: 16px; padding: 20px 16px; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.visual-title { font-size: 10px; letter-spacing: 2px; color: #aaa; text-transform: uppercase; margin-bottom: 14px; text-align: center; }
 
-  .toggle-row { display: flex; align-items: center; justify-content: space-between; }
-  .toggle-switch { width: 46px; height: 24px; background: #ddd; border-radius: 12px; cursor: pointer; position: relative; transition: background 0.3s; }
-  .toggle-switch.on { background: #333; }
-  .toggle-switch::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 3px; left: 3px; transition: left 0.3s; }
-  .toggle-switch.on::after { left: 25px; }
+.strap-container { display: flex; align-items: center; justify-content: center; gap: 0; height: 70px; }
+.nasukan { width: 28px; height: 28px; border: 4px solid #b8a060; border-radius: 6px; border-bottom: none; flex-shrink: 0; }
+.main-wrap-right { width: 36px; height: 44px; border-radius: 8px; flex-shrink: 0; transition: background 0.3s; }
+.sub-right-coil { width: 32px; height: 52px; border-radius: 10px; flex-shrink: 0; transition: background 0.3s; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.2); }
+.main-body { width: 80px; height: 28px; border-radius: 14px; flex-shrink: 0; transition: background 0.3s; }
+.sub-left-braid { width: 64px; height: 44px; border-radius: 10px; flex-shrink: 0; position: relative; overflow: hidden; }
+.main-wrap-left { width: 36px; height: 44px; border-radius: 8px; flex-shrink: 0; transition: background 0.3s; }
+.keyring { width: 30px; height: 30px; border: 5px solid #c0c0c0; border-radius: 50%; flex-shrink: 0; margin-left: 4px; }
 
-  .pair-preview { display: none; }
-  .pair-preview.show { display: block; }
-  .pair-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .pair-label { font-size: 10px; color: #aaa; width: 30px; }
-  .mini-cord { display: flex; align-items: center; flex: 1; height: 30px; }
-  .mini-section { height: 18px; border-radius: 9px; }
-  .mini-main { width: 40%; }
-  .mini-accent { width: 24%; height: 22px; border-radius: 11px; margin: 0 -4px; }
-  .mini-ring { width: 20px; height: 20px; border: 3px solid #c0c0c0; border-radius: 50%; margin-left: 6px; }
+.preview-label { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-top: 10px; min-height: 20px; }
+.preview-sub { text-align: center; font-size: 10px; color: #aaa; margin-top: 3px; min-height: 14px; }
 
-  .price-amount { text-align: center; font-size: 26px; font-weight: 700; }
-  .price-label { text-align: center; font-size: 11px; color: #aaa; margin-bottom: 12px; }
-  .order-summary { background: #f9f6f2; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #666; line-height: 1.7; margin-bottom: 14px; white-space: pre-line; }
-  .order-btn { display: block; width: 100%; padding: 14px; background: #2c2c2c; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; }
+.step-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.step-badge { width: 26px; height: 26px; border-radius: 50%; background: #1a1a1a; color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.step-badge.done { background: #4CAF50; }
+.step-info { flex: 1; }
+.step-name { font-size: 13px; font-weight: 700; }
+.step-desc { font-size: 10px; color: #aaa; margin-top: 2px; }
+.step-selected { font-size: 11px; font-weight: 600; color: #1a1a1a; margin-left: auto; white-space: nowrap; }
+
+.color-section-title { font-size: 10px; color: #bbb; letter-spacing: 1px; margin-bottom: 8px; margin-top: 12px; }
+.color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.color-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+.color-circle { width: 42px; height: 42px; border-radius: 50%; border: 3px solid transparent; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: transform 0.15s, border-color 0.15s; }
+.color-item.selected .color-circle { border-color: #1a1a1a; transform: scale(1.12); }
+.color-num { font-size: 8px; color: #bbb; }
+.color-name-label { font-size: 8px; color: #888; text-align: center; line-height: 1.2; }
+
+.summary-card { background: #1a1a1a; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+.summary-title { font-size: 10px; letter-spacing: 2px; color: #666; margin-bottom: 12px; }
+.summary-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.summary-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+.summary-text { font-size: 12px; color: #ccc; flex: 1; }
+.summary-color-name { font-size: 12px; color: white; font-weight: 600; }
+.summary-price { text-align: center; font-size: 28px; font-weight: 700; color: white; margin: 14px 0 4px; }
+.summary-price-sub { text-align: center; font-size: 10px; color: #666; margin-bottom: 14px; }
+.order-btn { display: block; width: 100%; padding: 15px; background: #c0a060; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; letter-spacing: 1px; }
+.order-btn:disabled { background: #444; color: #666; cursor: not-allowed; }
+.progress-bar { height: 3px; background: #eee; border-radius: 2px; margin-bottom: 14px; }
+.progress-fill { height: 100%; background: #1a1a1a; border-radius: 2px; transition: width 0.3s; }
 </style>
 </head>
 <body>
+
+<div class="header">
+  <h1>CRAFT CODE</h1>
+  <p>COLOR SIMULATOR – Vol.1 STANDARD（全37色）</p>
+</div>
+
 <div class="container">
-  <h1>C O R D</h1>
-  <p class="subtitle">color selector</p>
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
 
-  <div class="card">
-    <div class="title-sm">ラインを選ぶ</div>
-    <div class="line-options">
-      <div class="line-option selected" onclick="selectLine('standard')">
-        <div class="line-name">Standard</div>
-        <div class="line-price">¥3,000</div>
-        <div class="line-desc">2色・キーリング</div>
+  <div class="visual-card">
+    <div class="visual-title">PREVIEW</div>
+    <div class="strap-container">
+      <div class="keyring"></div>
+      <div class="main-wrap-left" id="vis-main-left" style="background:#ddd"></div>
+      <div class="sub-left-braid" id="vis-sub-left1" style="background:#ddd">
+        <div id="vis-sub-left2" style="position:absolute;top:0;right:0;width:50%;height:100%;background:#ccc;border-radius:0 10px 10px 0;"></div>
       </div>
-      <div class="line-option" onclick="selectLine('premium')">
-        <div class="line-name">Premium</div>
-        <div class="line-price">¥4,500</div>
-        <div class="line-desc">3色・カラビナ</div>
-      </div>
+      <div class="main-body" id="vis-main-body" style="background:#ddd"></div>
+      <div class="sub-right-coil" id="vis-sub-right" style="background:#ddd"></div>
+      <div class="main-wrap-right" id="vis-main-right" style="background:#ddd"></div>
+      <div class="nasukan"></div>
     </div>
+    <div class="preview-label" id="preview-label">カラーを選んでください</div>
+    <div class="preview-sub" id="preview-sub">①メインカラーから順に選んでください</div>
   </div>
 
-  <div class="card">
-    <div class="cord-visual">
-      <div class="cord-section cord-main" id="preview-main"></div>
-      <div class="cord-section cord-accent" id="preview-accent"></div>
-      <div class="cord-section cord-main" id="preview-main-r"></div>
-      <div class="ring"></div>
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-badge" id="badge1">1</div>
+      <div class="step-info"><div class="step-name">①メインカラー</div><div class="step-desc">本体・ナスカン巻き部分（1色）</div></div>
+      <div class="step-selected" id="selected1-label">未選択</div>
     </div>
-    <div class="preview-text" id="preview-text">ベースカラーを選んでください</div>
+    <div id="grid1"></div>
   </div>
 
-  <div class="card">
-    <div class="title-sm">ベースカラー</div>
-    <div class="color-grid" id="base-grid"></div>
-  </div>
-
-  <div class="card">
-    <div class="title-sm">アクセントカラー</div>
-    <div class="color-grid" id="accent-grid"></div>
-  </div>
-
-  <div class="card">
-    <div class="toggle-row">
-      <div>
-        <div style="font-size:13px; font-weight:600;">🔗 ペアセットにする</div>
-        <div style="font-size:10px; color:#aaa;">大切な人と色を入れ替えてお揃いに</div>
-      </div>
-      <div class="toggle-switch" id="pair-toggle" onclick="togglePair()"></div>
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-badge" id="badge2">2</div>
+      <div class="step-info"><div class="step-name">②サブカラーA（左）</div><div class="step-desc">左側の編み部分・1色目</div></div>
+      <div class="step-selected" id="selected2-label">未選択</div>
     </div>
+    <div id="grid2"></div>
   </div>
 
-  <div class="card pair-preview" id="pair-preview">
-    <div class="title-sm">ペアプレビュー</div>
-    <div class="pair-row">
-      <div class="pair-label">あなた</div>
-      <div class="mini-cord">
-        <div class="mini-section mini-main" id="pair-a-main"></div>
-        <div class="mini-section mini-accent" id="pair-a-accent"></div>
-        <div class="mini-section mini-main" id="pair-a-main-r"></div>
-        <div class="mini-ring"></div>
-      </div>
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-badge" id="badge3">3</div>
+      <div class="step-info"><div class="step-name">②サブカラーB（左）</div><div class="step-desc">左側の編み部分・2色目（Aと同じでもOK）</div></div>
+      <div class="step-selected" id="selected3-label">未選択</div>
     </div>
-    <div class="pair-row">
-      <div class="pair-label">相手</div>
-      <div class="mini-cord">
-        <div class="mini-section mini-main" id="pair-b-main"></div>
-        <div class="mini-section mini-accent" id="pair-b-accent"></div>
-        <div class="mini-section mini-main" id="pair-b-main-r"></div>
-        <div class="mini-ring"></div>
-      </div>
-    </div>
+    <div id="grid3"></div>
   </div>
 
-  <div class="card">
-    <div class="price-amount" id="price-display">¥3,000</div>
-    <div class="price-label">税込 / 送料別</div>
-    <div class="order-summary" id="order-summary">ラインとカラーを選んで注文へ進んでください</div>
-    <a class="order-btn" href="#" onclick="handleOrder(event)">この組み合わせで注文する →</a>
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-badge" id="badge4">4</div>
+      <div class="step-info"><div class="step-name">③サブカラー（右）</div><div class="step-desc">右側の編み部分（1色）</div></div>
+      <div class="step-selected" id="selected4-label">未選択</div>
+    </div>
+    <div id="grid4"></div>
+  </div>
+
+  <div class="summary-card">
+    <div class="summary-title">ORDER SUMMARY</div>
+    <div class="summary-row"><div class="summary-dot" id="sum-dot1" style="background:#555"></div><div class="summary-text">①メインカラー</div><div class="summary-color-name" id="sum-name1">—</div></div>
+    <div class="summary-row"><div class="summary-dot" id="sum-dot2" style="background:#555"></div><div class="summary-text">②サブA（左）</div><div class="summary-color-name" id="sum-name2">—</div></div>
+    <div class="summary-row"><div class="summary-dot" id="sum-dot3" style="background:#555"></div><div class="summary-text">②サブB（左）</div><div class="summary-color-name" id="sum-name3">—</div></div>
+    <div class="summary-row"><div class="summary-dot" id="sum-dot4" style="background:#555"></div><div class="summary-text">③サブ（右）</div><div class="summary-color-name" id="sum-name4">—</div></div>
+    <div class="summary-price">¥3,000</div>
+    <div class="summary-price-sub">税込 / 送料別 / 製作3〜5営業日</div>
+    <button class="order-btn" id="order-btn" disabled onclick="handleOrder()">4色すべて選んで注文へ →</button>
   </div>
 </div>
 
 <script>
-  // ここを実際に使っているパラコードの色名・カラーコードに書き換えてください
-  const COLORS = [
-    { id: 'brown',  name: 'アースブラウン',   hex: '#8B5E3C' },
-    { id: 'beige',  name: 'サンドベージュ',   hex: '#C9A97A' },
-    { id: 'blue',   name: 'オーシャンブルー', hex: '#5B8DB8' },
-    { id: 'yellow', name: 'サンイエロー',     hex: '#D4A017' },
-    { id: 'white',  name: 'クリームホワイト', hex: '#F0EDE6' },
-    { id: 'khaki',  name: 'カーキ',           hex: '#7D8C5A' },
-  ];
+const COLORS = [
+  { id:1,  name:'アイスグレー',    hex:'#C8C8C8', group:'A' },
+  { id:2,  name:'ミントブルー',    hex:'#A8D8D8', group:'A' },
+  { id:3,  name:'ミントグリーン',  hex:'#90C8A0', group:'A' },
+  { id:4,  name:'グリーン',        hex:'#4A8A50', group:'A' },
+  { id:5,  name:'ネイビー',        hex:'#2A3A6A', group:'A' },
+  { id:6,  name:'コーラルレッド',  hex:'#E05A4A', group:'A' },
+  { id:7,  name:'クリームイエロー',hex:'#F0E080', group:'A' },
+  { id:9,  name:'マスタード',      hex:'#C8A020', group:'A' },
+  { id:10, name:'ベージュ',        hex:'#D4B896', group:'A' },
+  { id:11, name:'モカブラウン',    hex:'#8B6040', group:'A' },
+  { id:12, name:'ダークブラウン',  hex:'#5A3820', group:'A' },
+  { id:26, name:'サンドベージュ',  hex:'#C8A878', group:'A' },
+  { id:13, name:'パープル',        hex:'#8A50C0', group:'B' },
+  { id:14, name:'ブルー',          hex:'#2060C8', group:'B' },
+  { id:15, name:'ターコイズ',      hex:'#20A8A0', group:'B' },
+  { id:16, name:'レッド',          hex:'#D02020', group:'B' },
+  { id:17, name:'コーラルオレンジ',hex:'#F07040', group:'B' },
+  { id:18, name:'ライトブルー',    hex:'#70B0E0', group:'B' },
+  { id:19, name:'ブラック',        hex:'#1A1A1A', group:'B' },
+  { id:20, name:'イエロー',        hex:'#F0D000', group:'B' },
+  { id:21, name:'オレンジ',        hex:'#F07010', group:'B' },
+  { id:22, name:'パッションピンク',hex:'#E82880', group:'C' },
+  { id:24, name:'ベビーピンク',    hex:'#F0A8B8', group:'C' },
+  { id:25, name:'ブラウン',        hex:'#7A4030', group:'C' },
+  { id:27, name:'カーキ',          hex:'#7A7850', group:'C' },
+  { id:28, name:'インクブルー',    hex:'#304878', group:'C' },
+  { id:29, name:'バーガンディ',    hex:'#782040', group:'C' },
+  { id:30, name:'プラム',          hex:'#5A2858', group:'C' },
+  { id:31, name:'モスグリーン',    hex:'#506840', group:'C' },
+  { id:32, name:'ミルキーグリーン',hex:'#A8C8A0', group:'C' },
+  { id:34, name:'アクアブルー',    hex:'#20A0D0', group:'C' },
+  { id:35, name:'ライムグリーン',  hex:'#A0D020', group:'C' },
+  { id:36, name:'ホワイト',        hex:'#F5F5F5', group:'C' },
+  { id:37, name:'ラムネ',          hex:'#A0D8E8', group:'C' },
+  { id:38, name:'グレー',          hex:'#909090', group:'C' },
+  { id:39, name:'カシス',          hex:'#602060', group:'C' },
+  { id:40, name:'カカオ',          hex:'#3A2018', group:'C' },
+];
 
-  let state = { line: 'standard', base: null, accent: null, isPair: false };
-  const PRICES = { standard: 3000, premium: 4500, standardPair: 5500, premiumPair: 8500 };
+const GROUP_NAMES = { A:'定番カラー', B:'ビビッドカラー', C:'ニュアンスカラー' };
+let selected = { 1:null, 2:null, 3:null, 4:null };
 
-  function init() {
-    renderGrid('base-grid', 'base');
-    renderGrid('accent-grid', 'accent');
-  }
-  function renderGrid(containerId, type) {
-    const c = document.getElementById(containerId);
-    c.innerHTML = '';
-    COLORS.forEach(color => {
-      const div = document.createElement('div');
-      div.className = 'color-option';
-      div.id = `${type}-${color.id}`;
-      div.onclick = () => selectColor(type, color);
-      div.innerHTML = `<div class="color-circle" style="background:${color.hex}"></div><div class="color-name">${color.name}</div>`;
-      c.appendChild(div);
+function buildGrid(containerId, step) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  ['A','B','C'].forEach(group => {
+    const cols = COLORS.filter(c => c.group === group);
+    const title = document.createElement('div');
+    title.className = 'color-section-title';
+    title.textContent = GROUP_NAMES[group];
+    container.appendChild(title);
+    const grid = document.createElement('div');
+    grid.className = 'color-grid';
+    cols.forEach(color => {
+      const item = document.createElement('div');
+      item.className = 'color-item';
+      item.id = `step${step}-color${color.id}`;
+      item.onclick = () => selectColor(step, color);
+      item.innerHTML = `<div class="color-circle" style="background:${color.hex}"></div><div class="color-num">${color.id}</div><div class="color-name-label">${color.name}</div>`;
+      grid.appendChild(item);
     });
+    container.appendChild(grid);
+  });
+}
+
+function selectColor(step, color) {
+  if (selected[step]) {
+    const prev = document.getElementById(`step${step}-color${selected[step].id}`);
+    if (prev) prev.classList.remove('selected');
   }
-  function selectLine(line) {
-    state.line = line;
-    document.querySelectorAll('.line-option').forEach((el, i) => {
-      el.classList.toggle('selected', (i===0 && line==='standard') || (i===1 && line==='premium'));
-    });
-    updatePrice();
-  }
-  function selectColor(type, color) {
-    state[type] = color;
-    document.querySelectorAll(`[id^="${type}-"]`).forEach(el => el.classList.remove('selected'));
-    document.getElementById(`${type}-${color.id}`)?.classList.add('selected');
-    updatePreview();
-    updatePrice();
-  }
-  function updatePreview() {
-    const base = state.base?.hex || '#ddd';
-    const accent = state.accent?.hex || '#ccc';
-    document.getElementById('preview-main').style.background = base;
-    document.getElementById('preview-main-r').style.background = base;
-    document.getElementById('preview-accent').style.background = accent;
-    document.getElementById('preview-text').textContent =
-      state.base && state.accent ? `${state.base.name} × ${state.accent.name}` :
-      state.base ? `${state.base.name} → アクセントを選んでください` : 'ベースカラーを選んでください';
-    document.getElementById('pair-a-main').style.background = base;
-    document.getElementById('pair-a-main-r').style.background = base;
-    document.getElementById('pair-a-accent').style.background = accent;
-    document.getElementById('pair-b-main').style.background = accent;
-    document.getElementById('pair-b-main-r').style.background = accent;
-    document.getElementById('pair-b-accent').style.background = base;
-    updateSummary();
-  }
-  function togglePair() {
-    state.isPair = !state.isPair;
-    document.getElementById('pair-toggle').classList.toggle('on', state.isPair);
-    document.getElementById('pair-preview').classList.toggle('show', state.isPair);
-    updatePrice();
-    updateSummary();
-  }
-  function updatePrice() {
-    const price = state.isPair
-      ? (state.line === 'premium' ? PRICES.premiumPair : PRICES.standardPair)
-      : (state.line === 'premium' ? PRICES.premium : PRICES.standard);
-    document.getElementById('price-display').textContent = `¥${price.toLocaleString()}`;
-  }
-  function updateSummary() {
-    const lineName = state.line === 'premium' ? 'Premium' : 'Standard';
-    const pairText = state.isPair ? '（ペアセット）' : '';
-    document.getElementById('order-summary').textContent =
-      `ライン：${lineName}${pairText}\nベースカラー：${state.base ? state.base.name : '未選択'}\nアクセントカラー：${state.accent ? state.accent.name : '未選択'}`;
-  }
-  function handleOrder(e) {
-    e.preventDefault();
-    if (!state.base || !state.accent) { alert('ベースカラーとアクセントカラーを選んでください'); return; }
-    alert('【ご注文内容の確認】\n' + document.getElementById('order-summary').textContent +
-      '\n\n価格：' + document.getElementById('price-display').textContent +
-      '\n\nこの内容でBASEショップの注文ページへお進みください。');
-    // window.location.href = 'https://あなたのBASEショップURL.base.shop'; // 実際に運用する際はここを有効にしてください
-  }
-  init();
+  selected[step] = color;
+  document.getElementById(`step${step}-color${color.id}`)?.classList.add('selected');
+  updateAll();
+}
+
+function updateAll() { updatePreview(); updateSummary(); updateBadges(); updateProgress(); updateOrderBtn(); }
+
+function updatePreview() {
+  const m = selected[1]?.hex || '#ddd', s1 = selected[2]?.hex || '#ddd', s2 = selected[3]?.hex || '#ccc', r = selected[4]?.hex || '#ddd';
+  document.getElementById('vis-main-left').style.background = m;
+  document.getElementById('vis-main-right').style.background = m;
+  document.getElementById('vis-main-body').style.background = m;
+  document.getElementById('vis-sub-left1').style.background = s1;
+  document.getElementById('vis-sub-left2').style.background = s2;
+  document.getElementById('vis-sub-right').style.background = r;
+  const names = [selected[1], selected[2], selected[3], selected[4]].map(s => s?.name || '—');
+  const filled = [selected[1], selected[2], selected[3], selected[4]].filter(Boolean).length;
+  document.getElementById('preview-label').textContent = filled > 0 ? names.filter((_,i) => selected[i+1]).join(' / ') : 'カラーを選んでください';
+  document.getElementById('preview-sub').textContent = filled === 4 ? '✓ 4色選択完了 — 注文できます' : `①メインカラーから順に選んでください（${filled}/4色）`;
+}
+
+function updateSummary() {
+  [1,2,3,4].forEach(i => {
+    const c = selected[i];
+    document.getElementById(`sum-dot${i}`).style.background = c ? c.hex : '#555';
+    document.getElementById(`sum-name${i}`).textContent = c ? `${c.id}. ${c.name}` : '—';
+    document.getElementById(`selected${i}-label`).textContent = c ? c.name : '未選択';
+  });
+}
+
+function updateBadges() {
+  [1,2,3,4].forEach(i => {
+    const badge = document.getElementById(`badge${i}`);
+    if (selected[i]) { badge.classList.add('done'); badge.textContent = '✓'; }
+    else { badge.classList.remove('done'); badge.textContent = i; }
+  });
+}
+
+function updateProgress() {
+  const filled = [1,2,3,4].filter(i => selected[i]).length;
+  document.getElementById('progress').style.width = `${filled * 25}%`;
+}
+
+function updateOrderBtn() {
+  const btn = document.getElementById('order-btn');
+  const allSelected = [1,2,3,4].every(i => selected[i]);
+  btn.disabled = !allSelected;
+  btn.textContent = allSelected ? 'この組み合わせで注文する →' : `4色すべて選んで注文へ（${[1,2,3,4].filter(i=>selected[i]).length}/4色）`;
+}
+
+function handleOrder() {
+  const s = selected;
+  if (![1,2,3,4].every(i => s[i])) return;
+  const msg = `【ご注文内容】\n\n①メインカラー：${s[1].id}. ${s[1].name}\n②サブA（左）：${s[2].id}. ${s[2].name}\n②サブB（左）：${s[3].id}. ${s[3].name}\n③サブ（右）：${s[4].id}. ${s[4].name}\n\n価格：¥3,000（税込・送料別）\n製作期間：3〜5営業日\n\nBASEショップの注文ページへお進みください。`;
+  alert(msg);
+  // window.location.href = 'https://あなたのBASEショップURL.base.shop';
+}
+
+[1,2,3,4].forEach(i => buildGrid(`grid${i}`, i));
 </script>
 </body>
 </html>
