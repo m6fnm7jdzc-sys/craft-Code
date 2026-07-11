@@ -13,10 +13,8 @@ body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; co
 .container { max-width: 480px; margin: 0 auto; padding: 16px; }
 .progress-bar { height: 3px; background: #eee; border-radius: 2px; margin-bottom: 14px; }
 .progress-fill { height: 100%; background: #1a1a1a; border-radius: 2px; transition: width 0.3s; }
-
 .photo-card, .visual-card, .step-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
 .photo-title, .visual-title { font-size: 10px; letter-spacing: 2px; color: #aaa; text-transform: uppercase; margin-bottom: 12px; text-align: center; }
-
 .photo-wrap { position: relative; width: 100%; max-width: 320px; margin: 0 auto; }
 .photo-base { display: block; width: 100%; height: auto; }
 .tint-layer {
@@ -28,17 +26,15 @@ body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; co
   transition: background 0.3s ease;
 }
 .photo-note { text-align:center; font-size:9px; color:#bbb; margin-top:10px; }
-
 .strap-container { display: flex; align-items: center; justify-content: center; height: 70px; }
 .nasukan { width: 28px; height: 28px; border: 4px solid #b8a060; border-radius: 6px; border-bottom: none; flex-shrink: 0; }
 .main-wrap-right, .main-wrap-left { width: 36px; height: 44px; border-radius: 8px; flex-shrink: 0; transition: background 0.3s; }
 .sub-right-coil { width: 32px; height: 52px; border-radius: 10px; flex-shrink: 0; transition: background 0.3s; }
 .main-body { width: 80px; height: 28px; border-radius: 14px; flex-shrink: 0; transition: background 0.3s; }
-.sub-left-braid { width: 64px; height: 44px; border-radius: 10px; flex-shrink: 0; position: relative; overflow: hidden; }
+.sub-left-braid { width: 64px; height: 44px; border-radius: 10px; flex-shrink: 0; transition: background 0.3s; }
 .keyring { width: 30px; height: 30px; border: 5px solid #c0c0c0; border-radius: 50%; flex-shrink: 0; margin-left: 4px; }
 .preview-label { text-align: center; font-size: 13px; font-weight: 600; color: #444; margin-top: 10px; min-height: 20px; }
 .preview-sub { text-align: center; font-size: 10px; color: #aaa; margin-top: 3px; min-height: 14px; }
-
 .step-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .step-badge { width: 26px; height: 26px; border-radius: 50%; background: #1a1a1a; color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .step-badge.done { background: #4CAF50; }
@@ -53,7 +49,6 @@ body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; co
 .color-item.selected .color-circle { border-color: #1a1a1a; transform: scale(1.12); }
 .color-num { font-size: 8px; color: #bbb; }
 .color-name-label { font-size: 8px; color: #888; text-align: center; line-height: 1.2; }
-
 .summary-card { background: #1a1a1a; border-radius: 16px; padding: 18px; margin-bottom: 14px; }
 .summary-title { font-size: 10px; letter-spacing: 2px; color: #666; margin-bottom: 12px; }
 .summary-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
@@ -79,15 +74,17 @@ body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; co
   <div class="photo-card">
     <div class="photo-title">📸 実物の質感プレビュー</div>
     <div class="photo-wrap">
-      <img class="photo-base" src="IMG_2518.png" alt="ベース写真">
+      <img class="photo-base" src="IMG_2532.png" alt="ベース写真">
       <div class="tint-layer" id="tint-main"
-           style="-webkit-mask-image:url(IMG_2519.png); mask-image:url(IMG_2519.png); background:#ddd;"></div>
-      <div class="tint-layer" id="tint-subleft"
-           style="-webkit-mask-image:url(IMG_2520.png); mask-image:url(IMG_2520.png); background:#ccc;"></div>
+           style="-webkit-mask-image:url(IMG_2533.png); mask-image:url(IMG_2533.png); background:#ddd;"></div>
+      <div class="tint-layer" id="tint-subleft-a"
+           style="-webkit-mask-image:url(IMG_2534.png); mask-image:url(IMG_2534.png); background:#ccc;"></div>
+      <div class="tint-layer" id="tint-subleft-b"
+           style="-webkit-mask-image:url(IMG_2535.png); mask-image:url(IMG_2535.png); background:#bbb;"></div>
       <div class="tint-layer" id="tint-subright"
-           style="-webkit-mask-image:url(IMG_2521.png); mask-image:url(IMG_2521.png); background:#ccc;"></div>
+           style="-webkit-mask-image:url(IMG_2536.png); mask-image:url(IMG_2536.png); background:#ccc;"></div>
     </div>
-    <div class="photo-note">※左側の編み込みは「サブカラーA」の代表色で質感を表現しています。正確な2色は下のイラストでご確認ください。</div>
+    <div class="photo-note">※左側の編み目を、サブカラーA・Bで塗り分けています。</div>
   </div>
 
   <div class="visual-card">
@@ -95,9 +92,7 @@ body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f2ee; co
     <div class="strap-container">
       <div class="keyring"></div>
       <div class="main-wrap-left" id="vis-main-left" style="background:#ddd"></div>
-      <div class="sub-left-braid" id="vis-sub-left1" style="background:#ddd">
-        <div id="vis-sub-left2" style="position:absolute;top:0;right:0;width:50%;height:100%;background:#ccc;border-radius:0 10px 10px 0;"></div>
-      </div>
+      <div class="sub-left-braid" id="vis-sub-left" style="background:#ddd"></div>
       <div class="main-body" id="vis-main-body" style="background:#ddd"></div>
       <div class="sub-right-coil" id="vis-sub-right" style="background:#ddd"></div>
       <div class="main-wrap-right" id="vis-main-right" style="background:#ddd"></div>
@@ -161,6 +156,9 @@ const COLORS = [
 const GROUP_NAMES = {A:'定番カラー',B:'ビビッドカラー',C:'ニュアンスカラー'};
 let selected = {1:null,2:null,3:null,4:null};
 
+function stripeGradient(colorA, colorB) {
+  return `repeating-linear-gradient(45deg, ${colorA} 0px, ${colorA} 9px, ${colorB} 9px, ${colorB} 18px)`;
+}
 function buildGrid(containerId, step) {
   const container = document.getElementById(containerId); container.innerHTML = '';
   ['A','B','C'].forEach(group => {
@@ -187,17 +185,19 @@ function updateAll() { updatePhoto(); updateIllustration(); updateSummary(); upd
 
 function updatePhoto() {
   if (selected[1]) document.getElementById('tint-main').style.background = selected[1].hex;
-  if (selected[2]) document.getElementById('tint-subleft').style.background = selected[2].hex;
+  if (selected[2]) document.getElementById('tint-subleft-a').style.background = selected[2].hex;
+  if (selected[3]) document.getElementById('tint-subleft-b').style.background = selected[3].hex;
   if (selected[4]) document.getElementById('tint-subright').style.background = selected[4].hex;
 }
-
 function updateIllustration() {
-  const m = selected[1]?.hex||'#ddd', s1=selected[2]?.hex||'#ddd', s2=selected[3]?.hex||'#ccc', r=selected[4]?.hex||'#ddd';
+  const m = selected[1]?.hex || '#ddd';
+  const s1 = selected[2]?.hex || null;
+  const s2 = selected[3]?.hex || null;
+  const r = selected[4]?.hex || '#ddd';
   document.getElementById('vis-main-left').style.background = m;
   document.getElementById('vis-main-right').style.background = m;
   document.getElementById('vis-main-body').style.background = m;
-  document.getElementById('vis-sub-left1').style.background = s1;
-  document.getElementById('vis-sub-left2').style.background = s2;
+  document.getElementById('vis-sub-left').style.background = (s1 || s2) ? stripeGradient(s1 || s2, s2 || s1) : '#ddd';
   document.getElementById('vis-sub-right').style.background = r;
   const filled = [1,2,3,4].filter(i=>selected[i]).length;
   document.getElementById('preview-label').textContent = filled > 0 ? [selected[1],selected[2],selected[3],selected[4]].filter(Boolean).map(s=>s.name).join(' / ') : 'カラーを選んでください';
